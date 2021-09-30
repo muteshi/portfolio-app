@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import json
 
 with open('/appdata/config.json') as config_file:
     config = json.load(config_file)
