@@ -9,8 +9,10 @@ COPY ./requirements.txt /requirements.txt
 # Installing client libraries and any other package you need
 RUN apk update && apk add --no-cache libpq
 
+
 RUN apk add  --update --no-cache --virtual .build-deps \
-            gcc python3-dev musl-dev postgresql-dev
+            gcc python3-dev musl-dev postgresql-dev \
+            jpeg-dev zlib-dev libjpeg
 
 RUN pip install -r /requirements.txt
 
