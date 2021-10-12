@@ -51,3 +51,4 @@ class TagViewSet(MainBlogAppViewSet):
     queryset = Tag.objects.all()
     serializer_class = serializers.TagSerializer
 
+
