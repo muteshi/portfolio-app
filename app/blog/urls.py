@@ -6,7 +6,7 @@ from blog import views
 
 router = DefaultRouter()
 router.register('tags', views.TagViewSet)
-# router.register('ingredients', views.IngredientViewSet)
+router.register('categories', views.CategoryViewSet)
 # router.register('recipes', views.RecipeViewSet)
 
 app_name = 'blog'

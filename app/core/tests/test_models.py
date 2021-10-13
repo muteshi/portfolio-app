@@ -64,3 +64,14 @@ class ModelTests(TestCase):
         )
 
         self.assertEqual(str(tag), tag.name)
+
+    def test_category_str(self):
+        """
+        Test the string representation of a category model
+        """
+        category = models.Category.objects.create(
+            user=test_user(),
+            name='Hyper-V'
+        )
+
+        self.assertEqual(str(category), category.name)
