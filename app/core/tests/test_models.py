@@ -75,3 +75,15 @@ class ModelTests(TestCase):
         )
 
         self.assertEqual(str(category), category.name)
+    
+    def test_post_str(self):
+        """
+        Test the string representation of the post model
+        """
+        post = models.Post.objects.create(
+            author=test_user(),
+            title='This is a test title',
+            content='Hahaha this is it',
+        )
+
+        self.assertEqual(str(post), post.title)

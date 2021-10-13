@@ -68,3 +68,27 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Post(models.Model):
+    """
+    Blog post object
+    """
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    updated = models.DateTimeField(auto_now=True, auto_now_add=False)
+    date_posted = models.DateTimeField(auto_now=False, auto_now_add=True)
+    tags = models.ManyToManyField('Tag')
+    category = models.ManyToManyField('Category')
+
+
+    class Meta:
+        ordering = ["title"]
+        verbose_name_plural = "Posts"
+
+    def __str__(self):
+        return self.title
