@@ -76,27 +76,27 @@ class PrivateCategoriesAPITests(TestCase):
         self.assertEqual(len(res.data), 1)
         self.assertEqual(res.data[0]['name'], category.name)
 
-    # def test_create_ingredient_successful(self):
-    #     """
-    #     Test successful creation of a new ingredient
-    #     """
-    #     payload = {'name': 'Cabbage'}
-    #     self.client.post(INGREDIENTS_URL, payload)
+    def test_create_category_successful(self):
+        """
+        Test successful creation of a new category
+        """
+        payload = {'name': 'Resume'}
+        self.client.post(CATEGORIES_URL, payload)
 
-    #     ing_exists = Ingredient.objects.filter(
-    #         user=self.user,
-    #         name=payload['name']
-    #     ).exists()
-    #     self.assertTrue(ing_exists)
+        category_exists = Category.objects.filter(
+            user=self.user,
+            name=payload['name']
+        ).exists()
+        self.assertTrue(category_exists)
 
-    # def test_create_ingredient_invalid(self):
-    #     """
-    #     Test creating of ingredient with invalid info fails
-    #     """
-    #     payload = {'name': ''}
-    #     res = self.client.post(INGREDIENTS_URL, payload)
+    def test_create_category_invalid(self):
+        """
+        Test creating of category with invalid info fails
+        """
+        payload = {'name': ''}
+        res = self.client.post(CATEGORIES_URL, payload)
 
-    #     self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     # def test_retrieve_ingredients_assigned_to_recipes(self):
     #     """
