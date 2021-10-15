@@ -295,50 +295,50 @@ class PostImageUploadTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
-#     def test_filter_recipes_by_tags(self):
-#         """
-#         Test filtering recipes with specific tag
-#         """
-#         recipe1 = test_recipe(user=self.user, title='Recipe test 1')
-#         recipe2 = test_recipe(user=self.user, title='Recipe test 2')
-#         recipe3 = test_recipe(user=self.user, title='Recipe test 3')
-#         tag1 = test_tag(user=self.user, name='Test tag 1')
-#         tag2 = test_tag(user=self.user, name='Test tag 2')
-#         recipe1.tags.add(tag1)
-#         recipe2.tags.add(tag2)
+    def test_filter_posts_by_tags(self):
+        """
+        Test filtering posts with specific tag
+        """
+        post1 = test_post(user=self.user, title='post test 1')
+        post2 = test_post(user=self.user, title='post test 2')
+        post3 = test_post(user=self.user, title='post test 3')
+        tag1 = test_tag(user=self.user, name='Test tag 1')
+        tag2 = test_tag(user=self.user, name='Test tag 2')
+        post1.tags.add(tag1)
+        post2.tags.add(tag2)
 
-#         res = self.client.get(
-#             RECIPES_URL,
-#             {'tags': '{},{}'.format(tag1.id, tag2.id)}
-#         )
-#         serializer1 = RecipeSerializer(recipe1)
-#         serializer2 = RecipeSerializer(recipe2)
-#         serializer3 = RecipeSerializer(recipe3)
-#         self.assertIn(serializer1.data, res.data)
-#         self.assertIn(serializer2.data, res.data)
-#         self.assertNotIn(serializer3.data, res.data)
+        res = self.client.get(
+            POSTS_URL,
+            {'tags': '{},{}'.format(tag1.id, tag2.id)}
+        )
+        serializer1 = PostSerializer(post1)
+        serializer2 = PostSerializer(post2)
+        serializer3 = PostSerializer(post3)
+        self.assertIn(serializer1.data, res.data)
+        self.assertIn(serializer2.data, res.data)
+        self.assertNotIn(serializer3.data, res.data)
 
-#     def test_filter_recipes_by_ingredients(self):
-#         """
-#         Test filtering recipes with specific ingredient
-#         """
-#         recipe1 = test_recipe(user=self.user, title='Recipe test 4')
-#         recipe2 = test_recipe(user=self.user, title='Recipe test 5')
-#         recipe3 = test_recipe(user=self.user, title='Recipe test 6')
-#         ingredient1 = test_ingredient(
-#             user=self.user, name='Test ingredient 6')
-#         ingredient2 = test_ingredient(
-#             user=self.user, name='Test ingredient 7')
-#         recipe1.ingredients.add(ingredient1)
-#         recipe2.ingredients.add(ingredient2)
+    def test_filter_posts_by_category(self):
+        """
+        Test filtering posts with specific category
+        """
+        post1 = test_post(user=self.user, title='post test 4')
+        post2 = test_post(user=self.user, title='post test 5')
+        post3 = test_post(user=self.user, title='post test 6')
+        category1 = test_category(
+            user=self.user, name='Test category 6')
+        category2 = test_category(
+            user=self.user, name='Test category 7')
+        post1.category.add(category1)
+        post2.category.add(category2)
 
-#         res = self.client.get(
-#             RECIPES_URL,
-#             {'ingredients': '{},{}'.format(ingredient1.id, ingredient2.id)}
-#         )
-#         serializer1 = RecipeSerializer(recipe1)
-#         serializer2 = RecipeSerializer(recipe2)
-#         serializer3 = RecipeSerializer(recipe3)
-#         self.assertIn(serializer1.data, res.data)
-#         self.assertIn(serializer2.data, res.data)
-#         self.assertNotIn(serializer3.data, res.data)
+        res = self.client.get(
+            POSTS_URL,
+            {'cats': '{},{}'.format(category1.id, category2.id)}
+        )
+        serializer1 = PostSerializer(post1)
+        serializer2 = PostSerializer(post2)
+        serializer3 = PostSerializer(post3)
+        self.assertIn(serializer1.data, res.data)
+        self.assertIn(serializer2.data, res.data)
+        self.assertNotIn(serializer3.data, res.data)
