@@ -41,6 +41,7 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'content', 'date_posted', 'updated',
                   'category', 'tags','slug')
         read_only_Fields = ('id','date_posted','updated')
+        
 
 
 class PostDetailSerializer(PostSerializer):
@@ -57,12 +58,13 @@ class PostDetailSerializer(PostSerializer):
     )
 
 
-# class RecipeImageSerializer(serializers.ModelSerializer):
-#     """
-#     Serializer class for downloading images to recipe model
-#     """
-#     class Meta:
-#         model = Recipe
-#         fields = ('id', 'image')
-#         read_only_fields = ('id',)
+class PostImageSerializer(serializers.ModelSerializer):
+    """
+    Serializer class for downloading images to post model
+    """
+    class Meta:
+        model = Post
+        fields = ('slug', 'image')
+        read_only_fields = ('slug',)
+        
 

@@ -36,7 +36,7 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'user']
 
 class PostAdmin(admin.ModelAdmin):
-    ordering = ['date_posted']
+    ordering = ['-date_posted']
     list_display = ['title', 'date_posted', 'author']
 
 class TagAdmin(admin.ModelAdmin):
