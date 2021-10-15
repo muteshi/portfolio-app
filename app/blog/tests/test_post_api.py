@@ -160,7 +160,7 @@ class PrivateRecipeApiTests(TestCase):
         }
 
         res = self.client.post(POSTS_URL, payload)
-        print(res)
+    
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         post = Post.objects.get(id=res.data['id'])
@@ -210,48 +210,46 @@ class PrivateRecipeApiTests(TestCase):
         self.assertIn(cat1, categories)
         self.assertIn(cat2, categories)
 
-#     def test_partial_update_recipe(self):
-#         """
-#         Test updating a recipe with http patch method
-#         """
-#         recipe = test_recipe(user=self.user)
-#         recipe.tags.add(test_tag(user=self.user))
-#         new_tag = test_tag(user=self.user, name='Curry')
+    def test_partial_update_post(self):
+        """
+        Test updating a post with http patch method
+        """
+        post = test_post(user=self.user)
+        post.tags.add(test_tag(user=self.user))
+        new_tag = test_tag(user=self.user, name='Microsoft')
 
-#         payload = {
-#             'title': 'Chicken tikka',
-#             'tags': [new_tag.id]
-#         }
-#         url = detail_recipe_url(recipe.id)
-#         self.client.patch(url, payload)
+        payload = {
+            'title': 'Windows 11 Launch',
+            'tags': [new_tag.id]
+        }
+        url = detail_post_url(post.slug)
+        self.client.patch(url, payload)
 
-#         recipe.refresh_from_db()
-#         self.assertEqual(recipe.title, payload['title'])
-#         tags = recipe.tags.all()
-#         self.assertEqual(len(tags), 1)
-#         self.assertIn(new_tag, tags)
+        post.refresh_from_db()
+        self.assertEqual(post.title, payload['title'])
+        tags = post.tags.all()
+        self.assertEqual(len(tags), 1)
+        self.assertIn(new_tag, tags)
 
-#     def test_full_update_recipe(self):
-#         """
-#         Test updating a recipe with http put method
-#         """
-#         recipe = test_recipe(user=self.user)
-#         recipe.tags.add(test_tag(user=self.user))
+    def test_full_update_post(self):
+        """
+        Test updating a post with http put method
+        """
+        post = test_post(user=self.user)
+        post.tags.add(test_tag(user=self.user))
 
-#         payload = {
-#             'title': 'Spaghetti carbonara',
-#             'duration': 25,
-#             'price': 5.00
-#         }
-#         url = detail_recipe_url(recipe.id)
-#         self.client.put(url, payload)
+        payload = {
+            'title': 'Iphone 13',
+            'content':'New iphone 13'
+        }
+        url = detail_post_url(post.slug)
+        self.client.put(url, payload)
 
-#         recipe.refresh_from_db()
-#         self.assertEqual(recipe.title, payload['title'])
-#         self.assertEqual(recipe.duration, payload['duration'])
-#         self.assertEqual(recipe.price, payload['price'])
-#         tags = recipe.tags.all()
-#         self.assertEqual(len(tags), 0)
+        post.refresh_from_db()
+        self.assertEqual(post.title, payload['title'])
+        self.assertEqual(post.content, payload['content'])
+        tags = post.tags.all()
+        self.assertEqual(len(tags), 0)
 
 
 # class RecipeImageUploadTests(TestCase):

@@ -7,12 +7,12 @@ ENV PYTHONUNBUFFERED 1
 COPY ./requirements.txt /requirements.txt
 
 # Installing client libraries and any other package you need
-RUN apk update && apk add --no-cache libpq
+RUN apk update && apk add --no-cache libpq jpeg-dev
 
 
 RUN apk add  --update --no-cache --virtual .build-deps \
             gcc python3-dev musl-dev postgresql-dev \
-            jpeg-dev zlib-dev libjpeg
+             musl-dev zlib zlib-dev libjpeg
 
 RUN pip install -r /requirements.txt
 
@@ -24,5 +24,9 @@ RUN mkdir /app
 WORKDIR /app
 COPY ./app /app
 
+RUN mkdir -p /vol/web/media
+RUN mkdir -p /vol/web/static
 RUN adduser -D muteshi
+RUN chown -R muteshi:muteshi /vol/
+RUN chmod -R 755 /vol/web
 USER muteshi

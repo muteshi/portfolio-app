@@ -1,3 +1,7 @@
+import os
+import uuid
+
+from django.utils import timezone
 from django.db import models
 from django.db.models.signals import pre_save
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
@@ -6,6 +10,16 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
 from django.utils.text import slugify
 
 from django.conf import settings
+
+
+def post_image_file_path(instance, filename):
+    """
+    Function to generate file path for new post image
+    """
+    image_extension = filename.split('.')[-1]
+    filename = f'{uuid.uuid4()}.{image_extension}'
+
+    return os.path.join('uploads/post/', filename)
 
 
 
@@ -89,6 +103,10 @@ class Post(models.Model):
     date_posted = models.DateTimeField(auto_now=False, auto_now_add=True)
     tags = models.ManyToManyField('Tag')
     category = models.ManyToManyField('Category')
+    image = models.ImageField(
+        null=True,
+        upload_to=post_image_file_path
+    )
 
 
     class Meta:
