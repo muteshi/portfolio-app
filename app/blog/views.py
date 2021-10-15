@@ -4,7 +4,7 @@ from rest_framework import viewsets, mixins, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from core.models import Category, Tag
+from core.models import Category, Tag, Post
 
 from blog import serializers
 
@@ -60,14 +60,15 @@ class CategoryViewSet(MainBlogAppViewSet):
     serializer_class = serializers.CategorySerializer
 
 
-# class RecipeViewSet(viewsets.ModelViewSet):
-#     """
-#     Manage recipes in the database
-#     """
-#     queryset = Recipe.objects.all()
-#     serializer_class = serializers.RecipeSerializer
-#     authentication_classes = (TokenAuthentication,)
-#     permission_classes = (IsAuthenticated,)
+class PostViewSet(viewsets.ModelViewSet):
+    """
+    Manage posts in the database
+    """
+    queryset = Post.objects.all()
+    serializer_class = serializers.PostSerializer
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    lookup_field = 'slug'
 
 #     def _params_to_ints(self, qs):
 #         """
@@ -75,41 +76,41 @@ class CategoryViewSet(MainBlogAppViewSet):
 #         """
 #         return [int(str_id) for str_id in qs.split(',')]
 
-#     def get_queryset(self):
-#         """
-#         Retrieve recipes that are specific to logged in user
-#         Filter recipes accordingly
-#         """
-#         tags = self.request.query_params.get('tags')
-#         ingredients = self.request.query_params.get('ingredients')
-#         queryset = self.queryset
-#         if tags:
-#             tag_ids = self._params_to_ints(tags)
-#             queryset = queryset.filter(tags__id__in=tag_ids)
-#         if ingredients:
-#             ingredient_ids = self._params_to_ints(ingredients)
-#             queryset = queryset.filter(ingredients__id__in=ingredient_ids)
+    def get_queryset(self):
+        """
+        Retrieve posts that are specific to logged in user
+        Filter posts accordingly
+        """
+        # tags = self.request.query_params.get('tags')
+        # ingredients = self.request.query_params.get('ingredients')
+        queryset = self.queryset
+        # if tags:
+        #     tag_ids = self._params_to_ints(tags)
+        #     queryset = queryset.filter(tags__id__in=tag_ids)
+        # if ingredients:
+        #     ingredient_ids = self._params_to_ints(ingredients)
+        #     queryset = queryset.filter(ingredients__id__in=ingredient_ids)
 
-#         return queryset.filter(
-#             user=self.request.user
-#         )
+        return queryset.filter(
+            author=self.request.user
+        )
 
-#     def get_serializer_class(self):
-#         """
-#         Return appropriate serializer class
-#         """
-#         if self.action == 'retrieve':
-#             return serializers.RecipeDetailSerializer
-#         elif self.action == 'upload_image':
-#             return serializers.RecipeImageSerializer
+    def get_serializer_class(self):
+        """
+        Return appropriate serializer class
+        """
+        if self.action == 'retrieve':
+            return serializers.PostDetailSerializer
+        # elif self.action == 'upload_image':
+        #     return serializers.RecipeImageSerializer
 
-#         return self.serializer_class
+        return self.serializer_class
 
-#     def perform_create(self, serializer):
-#         """
-#         Create a new recipe and assign the logged in user
-#         """
-#         serializer.save(user=self.request.user)
+    def perform_create(self, serializer):
+        """
+        Create a new post and assign the logged in user
+        """
+        serializer.save(author=self.request.user)
 
 #     @action(methods=['POST'], detail=True, url_path='upload-image')
 #     def upload_image(self, request, pk=None):

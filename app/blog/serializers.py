@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from core.models import Tag, Category
+from core.models import Tag, Category, Post
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -22,4 +22,47 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ('id', 'name')
         read_only_Fields = ('id',)
+
+class PostSerializer(serializers.ModelSerializer):
+    """
+    Serializer class for post object
+    """
+    category = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Category.objects.all()
+    )
+    tags = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Tag.objects.all()
+    )
+
+    class Meta:
+        model = Post
+        fields = ('id', 'title', 'content', 'date_posted', 'updated',
+                  'category', 'tags','slug')
+        read_only_Fields = ('id','date_posted','updated')
+
+
+class PostDetailSerializer(PostSerializer):
+    """
+    Serializer class for post object details view
+    """
+    category = CategorySerializer(
+        many=True,
+        read_only=True
+    )
+    tags = TagSerializer(
+        many=True,
+        read_only=True
+    )
+
+
+# class RecipeImageSerializer(serializers.ModelSerializer):
+#     """
+#     Serializer class for downloading images to recipe model
+#     """
+#     class Meta:
+#         model = Recipe
+#         fields = ('id', 'image')
+#         read_only_fields = ('id',)
 
