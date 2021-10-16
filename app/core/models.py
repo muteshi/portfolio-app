@@ -1,7 +1,6 @@
 import os
 import uuid
 
-from django.utils import timezone
 from django.db import models
 from django.db.models.signals import pre_save
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
@@ -20,7 +19,6 @@ def post_image_file_path(instance, filename):
     filename = f'{uuid.uuid4()}.{image_extension}'
 
     return os.path.join('uploads/post/', filename)
-
 
 
 class UserManager(BaseUserManager):
@@ -57,6 +55,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
 
+
 class Tag(models.Model):
     """
     Tag model to be used for a post tagging
@@ -69,6 +68,7 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Category(models.Model):
     """
@@ -93,7 +93,7 @@ class Post(models.Model):
     Blog post object
     """
     title = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True,blank=True, null=True)
+    slug = models.SlugField(unique=True, blank=True, null=True)
     content = models.TextField()
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -108,7 +108,6 @@ class Post(models.Model):
         upload_to=post_image_file_path
     )
 
-
     class Meta:
         ordering = ["title"]
         verbose_name_plural = "Posts"
@@ -116,7 +115,8 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
-def create_slug(obj, field,instance, new_slug=None):
+
+def create_slug(obj, field, instance, new_slug=None):
     slug = slugify(field)
     if new_slug is not None:
         slug = new_slug
@@ -128,9 +128,9 @@ def create_slug(obj, field,instance, new_slug=None):
     return slug
 
 
-
 def pre_save_post_reciever(sender, instance, *args, **kwargs):
     if not instance.slug:
-        instance.slug = create_slug(Post,instance.title, instance)
+        instance.slug = create_slug(Post, instance.title, instance)
+
 
 pre_save.connect(pre_save_post_reciever, sender=Post)

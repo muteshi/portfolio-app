@@ -35,4 +35,3 @@ class ManageUserAccountView(generics.RetrieveUpdateAPIView):
         Retrieve and return authenticated user account
         """
         return self.request.user
-

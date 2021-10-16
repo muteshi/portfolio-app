@@ -5,15 +5,17 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Tag
+from core.models import Tag, Post
 
 from blog.serializers import TagSerializer
 
 TAGS_URL = reverse('blog:tag-list')
 
+
 def create_test_user(email, password):
 
     return get_user_model().objects.create_user(email, password)
+
 
 class PublicTagsApiTests(TestCase):
     """
@@ -61,7 +63,7 @@ class PrivateTagsApiTests(TestCase):
         """
         Test that tags returned are for the authenticated user
         """
-        user2 = create_test_user('muteshi2@gmail.com','password')
+        user2 = create_test_user('muteshi2@gmail.com', 'password')
         Tag.objects.create(user=user2, name='Resume')
         tag = Tag.objects.create(user=self.user, name='Technology')
 
@@ -93,48 +95,45 @@ class PrivateTagsApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
-#     def test_retrieve_tags_assigned_to_recipes(self):
-#         """
-#         Test filtering tags by those assigned to recipes
-#         """
-#         tag1 = Tag.objects.create(user=self.user, name='Breakfast')
-#         tag2 = Tag.objects.create(user=self.user, name='Lunch')
-#         recipe = Recipe.objects.create(
-#             title='Coriander eggs on toast',
-#             duration=10,
-#             price=5.00,
-#             user=self.user,
-#         )
-#         recipe.tags.add(tag1)
+    def test_retrieve_tags_assigned_to_posts(self):
+        """
+        Test filtering tags by those assigned to posts
+        """
+        tag1 = Tag.objects.create(user=self.user, name='Tech')
+        tag2 = Tag.objects.create(user=self.user, name='Twitter')
+        post = Post.objects.create(
+            title='Testing tech title',
+            content='Testing again and again',
+            author=self.user,
+        )
+        post.tags.add(tag1)
 
-#         res = self.client.get(TAGS_URL, {'assigned_only': 1})
+        res = self.client.get(TAGS_URL, {'assigned_only': 1})
 
-#         serializer1 = TagSerializer(tag1)
-#         serializer2 = TagSerializer(tag2)
-#         self.assertIn(serializer1.data, res.data)
-#         self.assertNotIn(serializer2.data, res.data)
+        serializer1 = TagSerializer(tag1)
+        serializer2 = TagSerializer(tag2)
+        self.assertIn(serializer1.data, res.data)
+        self.assertNotIn(serializer2.data, res.data)
 
-#     def test_retrieve_tags_assigned_unique(self):
-#         """
-#         Test filtering tags by assigned returns unique items
-#         """
-#         tag = Tag.objects.create(user=self.user, name='Breakfast')
-#         Tag.objects.create(user=self.user, name='Lunch')
-#         recipe1 = Recipe.objects.create(
-#             title='Pancakes',
-#             duration=5,
-#             price=3.00,
-#             user=self.user
-#         )
-#         recipe1.tags.add(tag)
-#         recipe2 = Recipe.objects.create(
-#             title='Porridge',
-#             duration=3,
-#             price=2.00,
-#             user=self.user
-#         )
-#         recipe2.tags.add(tag)
+    def test_retrieve_tags_assigned_unique(self):
+        """
+        Test filtering tags by assigned returns unique items
+        """
+        tag = Tag.objects.create(user=self.user, name='Tech')
+        Tag.objects.create(user=self.user, name='Twitter')
+        post1 = Post.objects.create(
+            title='Testing here bana',
+            content='Ha ha ha ha test',
+            author=self.user
+        )
+        post1.tags.add(tag)
+        post2 = Post.objects.create(
+            title='Testing is good',
+            content='Testing i good i say',
+            author=self.user
+        )
+        post2.tags.add(tag)
 
-#         res = self.client.get(TAGS_URL, {'assigned_only': 1})
+        res = self.client.get(TAGS_URL, {'assigned_only': 1})
 
-#         self.assertEqual(len(res.data), 1)
+        self.assertEqual(len(res.data), 1)

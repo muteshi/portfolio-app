@@ -1,12 +1,20 @@
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 from rest_framework import viewsets, mixins, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import filters
 
 from core.models import Category, Tag, Post
 
 from blog import serializers
+
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
 
 class MainBlogAppViewSet(
@@ -29,7 +37,7 @@ class MainBlogAppViewSet(
         )
         queryset = self.queryset
         if assigned_only:
-            queryset = queryset.filter(recipe__isnull=False)
+            queryset = queryset.filter(post__isnull=False)
 
         return queryset.filter(
             user=self.request.user
@@ -68,7 +76,10 @@ class PostViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.PostSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
+    pagination_class = StandardResultsSetPagination
     lookup_field = 'slug'
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'content']
 
     def _params_to_ints(self, qs):
         """

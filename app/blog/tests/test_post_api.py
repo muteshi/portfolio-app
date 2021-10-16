@@ -8,7 +8,6 @@ from django.test import TestCase
 from django.urls import reverse
 
 from rest_framework import status
-from rest_framework import serializers
 from rest_framework.test import APIClient
 
 from core.models import Post, Tag, Category
@@ -103,7 +102,7 @@ class PrivateRecipeApiTests(TestCase):
         posts = Post.objects.all().order_by('title')
         serializer = PostSerializer(posts, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data, serializer.data)
+        self.assertEqual(res.data['results'], serializer.data)
 
     def test_posts_limited_to_user(self):
         """
@@ -121,19 +120,19 @@ class PrivateRecipeApiTests(TestCase):
         posts = Post.objects.filter(author=self.user)
         serializer = PostSerializer(posts, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 1)
-        self.assertEqual(res.data, serializer.data)
-    
+        self.assertEqual(len(res.data['results']), 1)
+        self.assertEqual(res.data['results'], serializer.data)
+
     def test_post_slug_unique(self):
         """
         Test that the slug of posts are unique
         """
-        post1 = Post.objects.create(author=self.user, title = 'Testing title', content='Testing content')
-        post2 = Post.objects.create(author=self.user, title = 'Testing title', content='Testing content')
+        post1 = Post.objects.create(
+            author=self.user, title='Testing title', content='Testing content')
+        post2 = Post.objects.create(
+            author=self.user, title='Testing title', content='Testing content')
 
-        self.assertNotEqual(post1.slug,post2.slug)
-
-
+        self.assertNotEqual(post1.slug, post2.slug)
 
     def test_details_post_view(self):
         """
@@ -142,7 +141,6 @@ class PrivateRecipeApiTests(TestCase):
         post = test_post(user=self.user)
         post.tags.add(test_tag(user=self.user))
         post.category.add(test_category(user=self.user))
-        
 
         url = detail_post_url(post.slug)
         res = self.client.get(url)
@@ -156,15 +154,14 @@ class PrivateRecipeApiTests(TestCase):
         """
         payload = {
             'title': 'Test post',
-            'content':'testing content',
+            'content': 'testing content',
         }
 
         res = self.client.post(POSTS_URL, payload)
-    
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         post = Post.objects.get(id=res.data['id'])
-        
+
         for key in payload.keys():
             self.assertEqual(payload[key], getattr(post, key))
 
@@ -178,7 +175,7 @@ class PrivateRecipeApiTests(TestCase):
         payload = {
             'title': 'Test post with two tags',
             'tags': [tag1.id, tag2.id],
-            'content':'Testing content'
+            'content': 'Testing content'
         }
         res = self.client.post(POSTS_URL, payload)
 
@@ -198,7 +195,7 @@ class PrivateRecipeApiTests(TestCase):
         payload = {
             'title': 'Test post with categories',
             'category': [cat1.id, cat2.id],
-            'content':'Testing content'
+            'content': 'Testing content'
         }
 
         res = self.client.post(POSTS_URL, payload)
@@ -240,7 +237,7 @@ class PrivateRecipeApiTests(TestCase):
 
         payload = {
             'title': 'Iphone 13',
-            'content':'New iphone 13'
+            'content': 'New iphone 13'
         }
         url = detail_post_url(post.slug)
         self.client.put(url, payload)
@@ -314,9 +311,9 @@ class PostImageUploadTests(TestCase):
         serializer1 = PostSerializer(post1)
         serializer2 = PostSerializer(post2)
         serializer3 = PostSerializer(post3)
-        self.assertIn(serializer1.data, res.data)
-        self.assertIn(serializer2.data, res.data)
-        self.assertNotIn(serializer3.data, res.data)
+        self.assertIn(serializer1.data, res.data['results'])
+        self.assertIn(serializer2.data, res.data['results'])
+        self.assertNotIn(serializer3.data, res.data['results'])
 
     def test_filter_posts_by_category(self):
         """
@@ -339,6 +336,45 @@ class PostImageUploadTests(TestCase):
         serializer1 = PostSerializer(post1)
         serializer2 = PostSerializer(post2)
         serializer3 = PostSerializer(post3)
-        self.assertIn(serializer1.data, res.data)
-        self.assertIn(serializer2.data, res.data)
-        self.assertNotIn(serializer3.data, res.data)
+        self.assertIn(serializer1.data, res.data['results'])
+        self.assertIn(serializer2.data, res.data['results'])
+        self.assertNotIn(serializer3.data, res.data['results'])
+
+    def test_filter_posts_by_word(self):
+        """
+        Test filtering posts with specific word
+        """
+        post1 = test_post(user=self.user, title='post1 test 4')
+        post2 = test_post(user=self.user, title='Tech test 5')
+        post3 = test_post(user=self.user, title='Tech test 6')
+
+        searchQuery = 'Tech'
+
+        res = self.client.get(
+            POSTS_URL,
+            {'search': searchQuery}
+        )
+        serializer1 = PostSerializer(post1)
+        serializer2 = PostSerializer(post2)
+        serializer3 = PostSerializer(post3)
+        self.assertNotIn(serializer1.data, res.data['results'])
+        self.assertIn(serializer2.data, res.data['results'])
+        self.assertIn(serializer3.data, res.data['results'])
+        self.assertEqual(len(res.data['results']), 2)
+
+    def test_posts_pagination(self):
+        """
+        Test that pagination is applied
+        """
+        # sample post list
+        test_post(user=self.user)
+        test_post(user=self.user)
+        test_post(user=self.user)
+
+        res = self.client.get(POSTS_URL)
+
+        posts = Post.objects.all().order_by('title')
+        serializer = PostSerializer(posts, many=True)
+
+        self.assertEqual(res.data['results'], serializer.data)
+        self.assertEqual(res.data['count'], len(res.data['results']))

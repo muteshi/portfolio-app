@@ -55,7 +55,6 @@ class ModelTests(TestCase):
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
 
-    
     def test_tag_str(self):
         """
         Test the string representation of a tag model
@@ -77,7 +76,7 @@ class ModelTests(TestCase):
         )
 
         self.assertEqual(str(category), category.name)
-    
+
     def test_post_str(self):
         """
         Test the string representation of the post model

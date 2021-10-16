@@ -13,6 +13,7 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
         read_only_Fields = ('id',)
 
+
 class CategorySerializer(serializers.ModelSerializer):
     """
     Serializer class for category object
@@ -22,6 +23,7 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ('id', 'name')
         read_only_Fields = ('id',)
+
 
 class PostSerializer(serializers.ModelSerializer):
     """
@@ -39,9 +41,8 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('id', 'title', 'content', 'date_posted', 'updated',
-                  'category', 'tags','slug')
-        read_only_Fields = ('id','date_posted','updated')
-        
+                  'category', 'tags', 'slug')
+        read_only_Fields = ('id', 'date_posted', 'updated')
 
 
 class PostDetailSerializer(PostSerializer):
@@ -66,5 +67,3 @@ class PostImageSerializer(serializers.ModelSerializer):
         model = Post
         fields = ('slug', 'image')
         read_only_fields = ('slug',)
-        
-
