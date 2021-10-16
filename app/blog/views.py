@@ -6,7 +6,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import filters
 
-from core.models import Category, Tag, Post
+from core.models import Category, Resume, Tag, Post
 
 from blog import serializers
 
@@ -58,6 +58,16 @@ class TagViewSet(MainBlogAppViewSet):
     """
     queryset = Tag.objects.all()
     serializer_class = serializers.TagSerializer
+
+
+class ResumeViewSet(viewsets.ModelViewSet):
+    """
+    Manage resume
+    """
+    queryset = Resume.objects.all()
+    serializer_class = serializers.ResumeSerializer
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
 
 
 class CategoryViewSet(MainBlogAppViewSet):

@@ -13,12 +13,14 @@ from django.conf import settings
 
 def post_image_file_path(instance, filename):
     """
-    Function to generate file path for new post image
+    Function to generate file path for new post file
     """
-    image_extension = filename.split('.')[-1]
-    filename = f'{uuid.uuid4()}.{image_extension}'
+    file_extension = filename.split('.')[-1]
+    filename = f'{uuid.uuid4()}.{file_extension}'
 
-    return os.path.join('uploads/post/', filename)
+    if file_extension.upper() == 'JPEG' or file_extension.upper() == 'PNG':
+        return os.path.join('uploads/post/', filename)
+    return os.path.join('uploads/resume/', filename)
 
 
 class UserManager(BaseUserManager):
@@ -111,6 +113,18 @@ class Post(models.Model):
     class Meta:
         ordering = ["title"]
         verbose_name_plural = "Posts"
+
+    def __str__(self):
+        return self.title
+
+
+class Resume(models.Model):
+    """
+    Resume class object
+    """
+
+    title = models.CharField(max_length=120)
+    resume = models.FileField(null=True, upload_to=post_image_file_path)
 
     def __str__(self):
         return self.title

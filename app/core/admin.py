@@ -40,6 +40,10 @@ class PostAdmin(admin.ModelAdmin):
     ordering = ['-date_posted']
     list_display = ['title', 'date_posted', 'author']
 
+class ResumeAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['title', 'resume']
+
 
 class TagAdmin(admin.ModelAdmin):
     ordering = ['id']
@@ -47,6 +51,7 @@ class TagAdmin(admin.ModelAdmin):
 
 
 admin.site.register(models.User, UserAdmin)
+admin.site.register(models.Resume, ResumeAdmin)
 admin.site.register(models.Tag, TagAdmin)
 admin.site.register(models.Category, CategoryAdmin)
 admin.site.register(models.Post, PostAdmin)
