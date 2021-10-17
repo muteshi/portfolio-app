@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from core.models import Resume, Tag, Category, Post
+from core.models import Resume, Skill, Tag, Category, Post
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -67,6 +67,16 @@ class ResumeSerializer(serializers.ModelSerializer):
         model = Resume
         fields = ('title', 'resume')
         read_only_Fields = ('title', 'resume')
+
+
+class SkillSerializer(serializers.ModelSerializer):
+    """
+    Serializer class for skill object details view
+    """
+    class Meta:
+        model = Skill
+        fields = ('title', 'percentage')
+        read_only_Fields = ('title', 'percentage')
 
 
 class PostImageSerializer(serializers.ModelSerializer):

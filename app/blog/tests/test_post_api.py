@@ -10,7 +10,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Post, Tag, Category
+from core.models import Post, Skill, Tag, Category
 
 from blog.serializers import PostSerializer, PostDetailSerializer
 
@@ -57,6 +57,19 @@ def test_post(user, **params):
     defaults.update(params)
 
     return Post.objects.create(author=user, **defaults)
+
+
+def test_skill(user, **params):
+    """
+    Create and return a sample test skill
+    """
+    defaults = {
+        'title': 'testing skill',
+        'percentage': 8,
+    }
+    defaults.update(params)
+
+    return Skill.objects.create(author=user, **defaults)
 
 
 class PublicPostApiTests(TestCase):
@@ -122,17 +135,6 @@ class PrivateRecipeApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data['results']), 1)
         self.assertEqual(res.data['results'], serializer.data)
-
-    def test_post_slug_unique(self):
-        """
-        Test that the slug of posts are unique
-        """
-        post1 = Post.objects.create(
-            author=self.user, title='Testing title', content='Testing content')
-        post2 = Post.objects.create(
-            author=self.user, title='Testing title', content='Testing content')
-
-        self.assertNotEqual(post1.slug, post2.slug)
 
     def test_details_post_view(self):
         """

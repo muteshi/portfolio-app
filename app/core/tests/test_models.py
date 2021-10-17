@@ -89,6 +89,18 @@ class ModelTests(TestCase):
 
         self.assertEqual(str(post), post.title)
 
+    def test_skills_str(self):
+        """
+        Test the string representation of the Skills model
+        """
+        skill = models.Skill.objects.create(
+            user=test_user(),
+            title='Backend Development',
+            percentage=7,
+        )
+
+        self.assertEqual(str(skill), skill.title)
+
     @patch('uuid.uuid4')
     def test_post_file_name_uuid(self, mock_uuid):
         """
@@ -100,3 +112,15 @@ class ModelTests(TestCase):
 
         expected_path = f'uploads/post/{uuid}.jpg'
         self.assertEqual(file_path, expected_path)
+
+    def test_post_slug_unique(self):
+        """
+        Test that the slug of posts are unique
+        """
+        user = test_user()
+        post1 = models.Post.objects.create(
+            author=user, title='Testing title', content='Testing content')
+        post2 = models.Post.objects.create(
+            author=user, title='Testing title', content='Testing content')
+
+        self.assertNotEqual(post1.slug, post2.slug)

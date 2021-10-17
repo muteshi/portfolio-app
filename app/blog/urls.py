@@ -9,6 +9,7 @@ router.register('tags', views.TagViewSet)
 router.register('categories', views.CategoryViewSet)
 router.register('posts', views.PostViewSet)
 router.register('resumes', views.ResumeViewSet)
+router.register('skills', views.SkillViewSet)
 
 app_name = 'blog'
 

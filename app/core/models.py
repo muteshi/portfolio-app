@@ -18,7 +18,8 @@ def post_image_file_path(instance, filename):
     file_extension = filename.split('.')[-1]
     filename = f'{uuid.uuid4()}.{file_extension}'
 
-    if file_extension.upper() == 'JPEG' or file_extension.upper() == 'PNG':
+    if file_extension.upper() == 'JPEG' or file_extension.upper() == 'JPG'\
+            or file_extension.upper() == 'PNG':
         return os.path.join('uploads/post/', filename)
     return os.path.join('uploads/resume/', filename)
 
@@ -88,6 +89,24 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Skill(models.Model):
+    """
+    Skill model object
+    """
+    title = models.CharField(max_length=255)
+    percentage = models.IntegerField()
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+
+    class Meta:
+        ordering = ["title"]
+
+    def __str__(self):
+        return self.title
 
 
 class Post(models.Model):
