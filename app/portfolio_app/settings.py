@@ -142,3 +142,13 @@ STATIC_ROOT = '/vol/web/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'core.User'
+DEFAULT_FROM_EMAIL = config['DEFAULT_FROM_EMAIL']
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = config['EMAIL_HOST']
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config['EMAIL_USER']
+EMAIL_COPY = config['EMAIL_COPY']
+EMAIL_HOST_PASSWORD = config['EMAIL_PASSWORD']

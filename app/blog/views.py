@@ -6,7 +6,8 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import filters
 
-from core.models import Category, Resume, Skill, Tag, Post
+from core.utils import id_generator, send_email
+from core.models import Category, Message, Resume, Skill, Tag, Post
 
 from blog import serializers
 
@@ -86,6 +87,23 @@ class CategoryViewSet(MainBlogAppViewSet):
     """
     queryset = Category.objects.all()
     serializer_class = serializers.CategorySerializer
+
+
+class MessageViewSet(viewsets.ModelViewSet):
+    """
+    Manage Message object
+    """
+    queryset = Message.objects.all()
+    serializer_class = serializers.MessageSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(message_id=id_generator())
+
+    def create(self, request, *args, **kwargs):
+        response = super(MessageViewSet, self).create(request, *args, **kwargs)
+
+        send_email(response.data)  # sending mail
+        return response
 
 
 class PostViewSet(viewsets.ModelViewSet):

@@ -56,9 +56,15 @@ class SkillAdmin(admin.ModelAdmin):
     list_display = ['title', 'percentage']
 
 
+class MessageAdmin(admin.ModelAdmin):
+    ordering = ['-date_sent']
+    list_display = ['name', 'subject', 'date_sent']
+
+
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.Resume, ResumeAdmin)
 admin.site.register(models.Skill, SkillAdmin)
+admin.site.register(models.Message, MessageAdmin)
 admin.site.register(models.Tag, TagAdmin)
 admin.site.register(models.Category, CategoryAdmin)
 admin.site.register(models.Post, PostAdmin)

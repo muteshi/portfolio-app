@@ -101,6 +101,19 @@ class ModelTests(TestCase):
 
         self.assertEqual(str(skill), skill.title)
 
+    def test_message_str(self):
+        """
+        Test the string representation of the Contact model
+        """
+        contact = models.Message.objects.create(
+            name='Test Name',
+            email='lumteshi@gmail.com',
+            subject='Checking on you',
+            comment='Here is my message',
+        )
+
+        self.assertEqual(str(contact), contact.name)
+
     @patch('uuid.uuid4')
     def test_post_file_name_uuid(self, mock_uuid):
         """

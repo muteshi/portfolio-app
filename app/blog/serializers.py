@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from core.models import Resume, Skill, Tag, Category, Post
+
+from core.models import Message, Resume, Skill, Tag, Category, Post
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -57,6 +58,16 @@ class PostDetailSerializer(PostSerializer):
         many=True,
         read_only=True
     )
+
+
+class MessageSerializer(serializers.ModelSerializer):
+    """
+    Serializer class for message object
+    """
+    class Meta:
+        model = Message
+        fields = ('name', 'subject', 'comment', 'email', 'message_id')
+        read_only_Fields = ('message_id')
 
 
 class ResumeSerializer(serializers.ModelSerializer):

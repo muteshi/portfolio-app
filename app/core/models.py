@@ -91,6 +91,25 @@ class Category(models.Model):
         return self.name
 
 
+class Message(models.Model):
+    """
+    Message model 
+    """
+    name = models.CharField(max_length=250)
+    email = models.EmailField(max_length=255)
+    subject = models.CharField(max_length=255)
+    comment = models.TextField()
+    date_sent = models.DateTimeField(auto_now=False, auto_now_add=True)
+    message_id = models.CharField(
+        max_length=120, default='ABC', unique=True)
+
+    class Meta:
+        ordering = ["-id"]
+
+    def __str__(self):
+        return self.name
+
+
 class Skill(models.Model):
     """
     Skill model object
