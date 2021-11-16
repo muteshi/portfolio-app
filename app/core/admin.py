@@ -41,6 +41,11 @@ class PostAdmin(admin.ModelAdmin):
     list_display = ['title', 'date_posted', 'author']
 
 
+class PortfolioAdmin(admin.ModelAdmin):
+    ordering = ['-date_posted']
+    list_display = ['title', 'date_posted', 'author']
+
+
 class ResumeAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['title', 'resume']
@@ -68,3 +73,4 @@ admin.site.register(models.Message, MessageAdmin)
 admin.site.register(models.Tag, TagAdmin)
 admin.site.register(models.Category, CategoryAdmin)
 admin.site.register(models.Post, PostAdmin)
+admin.site.register(models.Portfolio, PortfolioAdmin)

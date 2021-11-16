@@ -5,3 +5,7 @@ Pillow>=8.3.2,<8.5.0
 flake8>=3.9.0,<3.10.0
 autopep8>=1.5.6,<1.6.0
 uWSGI>=2.0.20,<2.2
+django-cors-headers>=3.10.0,<3.15.0
+sendgrid>=6.9.0,<7.0.0
+requests>=2.26.0,<2.30.0
+django-tinymce>=3.3.0,<3.4.0

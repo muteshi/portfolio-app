@@ -2,13 +2,16 @@ import os
 import uuid
 
 from django.db import models
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
     PermissionsMixin
 
 from django.utils.text import slugify
+from tinymce import models as tinymce_models
 
 from django.conf import settings
+
+from core.utils import send_email
 
 
 def post_image_file_path(instance, filename):
@@ -98,7 +101,7 @@ class Message(models.Model):
     name = models.CharField(max_length=250)
     email = models.EmailField(max_length=255)
     subject = models.CharField(max_length=255)
-    comment = models.TextField()
+    comment = tinymce_models.HTMLField()
     date_sent = models.DateTimeField(auto_now=False, auto_now_add=True)
     message_id = models.CharField(
         max_length=120, default='ABC', unique=True)
@@ -134,7 +137,8 @@ class Post(models.Model):
     """
     title = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, blank=True, null=True)
-    content = models.TextField()
+    featured = models.BooleanField(default=False, blank=True, null=True)
+    content = tinymce_models.HTMLField()
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
@@ -154,6 +158,16 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Portfolio(Post):
+    url = models.URLField(max_length=200)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ["-date_posted"]
 
 
 class Resume(models.Model):
@@ -186,3 +200,16 @@ def pre_save_post_reciever(sender, instance, *args, **kwargs):
 
 
 pre_save.connect(pre_save_post_reciever, sender=Post)
+
+
+def post_save_message_reciever(sender, instance, created, *args, **kwargs):
+
+    if created:
+        try:
+            print('sending email')
+            send_email(instance)
+        except Exception as e:
+            print(e)
+
+
+post_save.connect(post_save_message_reciever, sender=Message)

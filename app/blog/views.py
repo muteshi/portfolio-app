@@ -3,11 +3,12 @@ from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import viewsets, mixins, status
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import filters
+from rest_framework.generics import CreateAPIView
 
 from core.utils import id_generator, send_email
-from core.models import Category, Message, Resume, Skill, Tag, Post
+from core.models import Category, Message, Portfolio, Resume, Skill, Tag, Post
 
 from blog import serializers
 
@@ -28,6 +29,7 @@ class MainBlogAppViewSet(
     """
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
+    http_method_names = ['get', 'head']
 
     def get_queryset(self):
         """
@@ -67,8 +69,8 @@ class ResumeViewSet(viewsets.ModelViewSet):
     """
     queryset = Resume.objects.all()
     serializer_class = serializers.ResumeSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
+    http_method_names = ['get', 'head']
 
 
 class SkillViewSet(viewsets.ModelViewSet):
@@ -77,8 +79,9 @@ class SkillViewSet(viewsets.ModelViewSet):
     """
     queryset = Skill.objects.all()
     serializer_class = serializers.SkillSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    # authentication_classes = (TokenAuthentication,)
+    permission_classes = (AllowAny,)
+    http_method_names = ['get', 'head']
 
 
 class CategoryViewSet(MainBlogAppViewSet):
@@ -95,9 +98,10 @@ class MessageViewSet(viewsets.ModelViewSet):
     """
     queryset = Message.objects.all()
     serializer_class = serializers.MessageSerializer
+    http_method_names = ['post', 'head']
 
     def perform_create(self, serializer):
-        serializer.save(message_id=id_generator())
+        serializer.save(message_id=id_generator(Message))
 
     def create(self, request, *args, **kwargs):
         response = super(MessageViewSet, self).create(request, *args, **kwargs)
@@ -106,18 +110,29 @@ class MessageViewSet(viewsets.ModelViewSet):
         return response
 
 
+class MessageCreateAPIView(CreateAPIView):
+    """Create a new message object"""
+    queryset = Message.objects.all()
+    serializer_class = serializers.MessageSerializer
+
+    def perform_create(self, serializer):
+        print(serializer)
+        serializer.save(message_id=id_generator(Message))
+
+
 class PostViewSet(viewsets.ModelViewSet):
     """
     Manage posts in the database
     """
     queryset = Post.objects.all()
     serializer_class = serializers.PostSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    # authentication_classes = (TokenAuthentication,)
+    permission_classes = (AllowAny,)
     pagination_class = StandardResultsSetPagination
     lookup_field = 'slug'
     filter_backends = [filters.SearchFilter]
     search_fields = ['title', 'content']
+    http_method_names = ['get', 'head']
 
     def _params_to_ints(self, qs):
         """
@@ -140,9 +155,7 @@ class PostViewSet(viewsets.ModelViewSet):
             cat_ids = self._params_to_ints(cats)
             queryset = queryset.filter(category__id__in=cat_ids)
 
-        return queryset.filter(
-            author=self.request.user
-        )
+        return queryset
 
     def get_serializer_class(self):
         """
@@ -183,3 +196,11 @@ class PostViewSet(viewsets.ModelViewSet):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+class PortfolioViewSet(PostViewSet):
+    """
+    Manages portfolio objects
+    """
+    queryset = Portfolio.objects.all()
+    serializer_class = serializers.PortfolioSerializer

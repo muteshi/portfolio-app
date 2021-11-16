@@ -131,3 +131,5 @@ dmypy.json
 
 vol/
 data/
+static-data/
+sendgrid.env
