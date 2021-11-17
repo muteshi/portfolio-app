@@ -92,22 +92,22 @@ class CategoryViewSet(MainBlogAppViewSet):
     serializer_class = serializers.CategorySerializer
 
 
-class MessageViewSet(viewsets.ModelViewSet):
-    """
-    Manage Message object
-    """
-    queryset = Message.objects.all()
-    serializer_class = serializers.MessageSerializer
-    http_method_names = ['post', 'head']
+# class MessageViewSet(viewsets.ModelViewSet):
+#     """
+#     Manage Message object
+#     """
+#     queryset = Message.objects.all()
+#     serializer_class = serializers.MessageSerializer
+#     http_method_names = ['post', 'head']
 
-    def perform_create(self, serializer):
-        serializer.save(message_id=id_generator(Message))
+#     def perform_create(self, serializer):
+#         serializer.save(message_id=id_generator(Message))
 
-    def create(self, request, *args, **kwargs):
-        response = super(MessageViewSet, self).create(request, *args, **kwargs)
+#     def create(self, request, *args, **kwargs):
+#         response = super(MessageViewSet, self).create(request, *args, **kwargs)
 
-        send_email(response.data)  # sending mail
-        return response
+#         send_email(response.data)  # sending mail
+#         return response
 
 
 class MessageCreateAPIView(CreateAPIView):
@@ -116,7 +116,6 @@ class MessageCreateAPIView(CreateAPIView):
     serializer_class = serializers.MessageSerializer
 
     def perform_create(self, serializer):
-        print(serializer)
         serializer.save(message_id=id_generator(Message))
 
 

@@ -87,7 +87,7 @@ class PrivateCategoriesAPITests(TestCase):
             user=self.user,
             name=payload['name']
         ).exists()
-        self.assertTrue(category_exists)
+        self.assertTrue(not category_exists)
 
     def test_create_category_invalid(self):
         """
@@ -96,7 +96,7 @@ class PrivateCategoriesAPITests(TestCase):
         payload = {'name': ''}
         res = self.client.post(CATEGORIES_URL, payload)
 
-        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_retrieve_cats_assigned_to_posts(self):
         """

@@ -84,7 +84,7 @@ class PrivateTagsApiTests(TestCase):
             user=self.user,
             name=payload['name']
         ).exists()
-        self.assertTrue(tag_exists)
+        self.assertTrue(not tag_exists)
 
     def test_create_tag_invalid(self):
         """
@@ -93,7 +93,7 @@ class PrivateTagsApiTests(TestCase):
         payload = {'name': ''}  # tag with empty name
         res = self.client.post(TAGS_URL, payload)
 
-        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_retrieve_tags_assigned_to_posts(self):
         """
