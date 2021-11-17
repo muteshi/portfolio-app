@@ -206,7 +206,6 @@ def post_save_message_reciever(sender, instance, created, *args, **kwargs):
 
     if created:
         try:
-            print('sending email')
             send_email(instance)
         except Exception as e:
             print(e)
