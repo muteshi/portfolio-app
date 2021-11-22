@@ -9,4 +9,3 @@ python manage.py makemigrations core
 python manage.py migrate
 
 uwsgi --socket :9000 --workers 4 --master --enable-threads --module portfolio_app.wsgi
-
