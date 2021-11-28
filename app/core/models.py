@@ -22,7 +22,8 @@ def post_image_file_path(instance, filename):
     filename = f'{uuid.uuid4()}.{file_extension}'
 
     if file_extension.upper() == 'JPEG' or file_extension.upper() == 'JPG'\
-            or file_extension.upper() == 'PNG' or file_extension.upper() == 'WEBP':
+            or file_extension.upper() == 'PNG'\
+            or file_extension.upper() == 'WEBP':
         return os.path.join('uploads/post/', filename)
     return os.path.join('uploads/resume/', filename)
 
@@ -147,7 +148,7 @@ class Post(models.Model):
     date_posted = models.DateTimeField(auto_now=False, auto_now_add=True)
     tags = models.ManyToManyField('Tag')
     category = models.ManyToManyField('Category')
-    image = models.ImageField(
+    image = models.FileField(
         null=True,
         upload_to=post_image_file_path
     )
