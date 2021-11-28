@@ -20,6 +20,7 @@ server {
     server_name app.muteshi.com;
     server_tokens off;
     
+    
     client_max_body_size     10M;
 
     ssl_certificate /etc/nginx/ssl/live/app.muteshi.com/fullchain.pem;
@@ -38,11 +39,13 @@ server {
     location /api {
        uwsgi_pass               ${APP_HOST}:${APP_PORT};
        include                 /etc/nginx/uwsgi_params;
+      
        
     }
 
     location /static {
         alias /vol/static;
+        
     }
 
      

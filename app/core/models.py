@@ -22,7 +22,7 @@ def post_image_file_path(instance, filename):
     filename = f'{uuid.uuid4()}.{file_extension}'
 
     if file_extension.upper() == 'JPEG' or file_extension.upper() == 'JPG'\
-            or file_extension.upper() == 'PNG':
+            or file_extension.upper() == 'PNG' or file_extension.upper() == 'WEBP':
         return os.path.join('uploads/post/', filename)
     return os.path.join('uploads/resume/', filename)
 
