@@ -21,10 +21,11 @@ services:
       - EMAIL_COPY=${EMAIL_COPY}
       - SENDGRID_API_KEY=${SENDGRID_API_KEY}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS}
-      - CACHE_HOST = ${CACHE_HOST}
-      - CACHE_PORT = ${CACHE_PORT}
+      - CACHE_HOST=memcached
+      - CACHE_PORT=11211
     depends_on:
       - db
+      - memcached
 
   db:
     image: postgres:13-alpine
@@ -56,7 +57,13 @@ services:
     volumes:
       - certbot-www:/var/www/certbot/:rw
       - certbot-conf:/etc/letsencrypt/:rw
-
+  memcached:
+    image: memcached:latest
+    ports:
+      - 11211:11211
+    entrypoint:
+      - memcached
+      - -m 100
 
 volumes:
   postgres-data:
