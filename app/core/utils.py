@@ -2,6 +2,10 @@ import os
 import string
 import random
 
+from django.core.cache import cache
+
+from rest_framework.response import Response
+
 from python_http_client.exceptions import HTTPError
 from django.template.loader import render_to_string
 
@@ -47,3 +51,25 @@ def send_email(obj):
 
     except HTTPError as e:
         print(e.to_dict)
+
+
+def caching(slug, serializer_data):
+    """
+    Util function to implement caching
+    """
+    cache_key = f"post_details_{slug}"
+    data = cache.get(cache_key)
+    if data:
+        check_cache_validity(data)
+    # if we have updated data or no data set cache
+    cache.set(cache_key, serializer_data)
+
+
+def check_cache_validity(data):
+    """
+    Check if cache data is stale
+    """
+    date_posted = data.get('date_posted')
+    updated_date = data.get('updated')
+    if date_posted == updated_date:
+        return Response(data)

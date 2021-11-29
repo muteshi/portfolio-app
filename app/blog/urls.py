@@ -17,6 +17,7 @@ app_name = 'blog'
 
 urlpatterns = [
     path('', include(router.urls)),
-     path('new-message/',  views.MessageCreateAPIView.as_view(), name='message-create'),
+    path('new-message/',  views.MessageCreateAPIView.as_view(),
+         name='message-create'),
 
 ]

@@ -1,9 +1,9 @@
 import tempfile
-import os
 
 from PIL import Image
 
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.test import TestCase
 from django.urls import reverse
 
@@ -12,8 +12,7 @@ from rest_framework.test import APIClient
 
 from core.models import Post, Skill, Tag, Category
 
-from blog.serializers import PostSerializer, PostDetailSerializer
-
+from blog.serializers import PostSerializer
 
 POSTS_URL = reverse('blog:post-list')
 
@@ -89,7 +88,7 @@ class PublicPostApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
 
-class PrivateRecipeApiTests(TestCase):
+class PrivatePostApiTests(TestCase):
     """
     Test that access to protected API is authenticated
     """
@@ -145,10 +144,18 @@ class PrivateRecipeApiTests(TestCase):
         post.category.add(test_category(user=self.user))
 
         url = detail_post_url(post.slug)
-        res = self.client.get(url)
+        res1 = self.client.get(url)
+        res2 = self.client.get(url)
 
-        serializer = PostDetailSerializer(post)
-        self.assertEqual(res.data, serializer.data)
+        post_slug = res1.data.get('slug')
+
+        instance = Post.objects.get(slug=post_slug)
+        instance.delete()
+        cache_key = f"post_details_{post_slug}"
+        cached_data = cache.get(cache_key)
+        self.assertEqual(cached_data, None)
+
+        self.assertEqual(res1.data, res2.data)
 
     def test_create_basic_post(self):
         """
@@ -162,12 +169,11 @@ class PrivateRecipeApiTests(TestCase):
         res = self.client.post(POSTS_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-        #post does not exist
+        # post does not exist
         # post = Post.objects.get(id=res.data.get('id'))
 
-
         # for key in payload.keys():
-            # self.assertNotEqual(payload[key], getattr(post, key))
+        # self.assertNotEqual(payload[key], getattr(post, key))
 
     def test_create_post_with_tags(self):
         """

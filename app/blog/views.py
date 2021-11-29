@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
@@ -7,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import filters
 from rest_framework.generics import CreateAPIView
 
-from core.utils import id_generator, send_email
+from core.utils import caching, id_generator
 from core.models import Category, Message, Portfolio, Resume, Skill, Tag, Post
 
 from blog import serializers
@@ -92,24 +93,6 @@ class CategoryViewSet(MainBlogAppViewSet):
     serializer_class = serializers.CategorySerializer
 
 
-# class MessageViewSet(viewsets.ModelViewSet):
-#     """
-#     Manage Message object
-#     """
-#     queryset = Message.objects.all()
-#     serializer_class = serializers.MessageSerializer
-#     http_method_names = ['post', 'head']
-
-#     def perform_create(self, serializer):
-#         serializer.save(message_id=id_generator(Message))
-
-#     def create(self, request, *args, **kwargs):
-#         response = super(MessageViewSet, self).create(request, *args, **kwargs)
-
-#         send_email(response.data)  # sending mail
-#         return response
-
-
 class MessageCreateAPIView(CreateAPIView):
     """Create a new message object"""
     queryset = Message.objects.all()
@@ -166,6 +149,13 @@ class PostViewSet(viewsets.ModelViewSet):
             return serializers.PostImageSerializer
 
         return self.serializer_class
+
+    def retrieve(self, request, pk=None, slug=None):
+        queryset = Post.objects.all()
+        post = get_object_or_404(queryset, slug=slug)
+        serializer = serializers.PostDetailSerializer(post)
+        caching(slug, serializer.data)
+        return Response(serializer.data)
 
     def perform_create(self, serializer):
         """

@@ -28,8 +28,11 @@ services:
       - EMAIL_USER=${EMAIL_USER}
       - EMAIL_COPY=${EMAIL_COPY}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - CACHE_HOST=memcached
+      - CACHE_PORT=11211
     depends_on:
       - db
+      - memcached
     
   db:
     image: postgres:13-alpine
@@ -37,6 +40,13 @@ services:
       - POSTGRES_DB=dev_db
       - POSTGRES_USER=dev_user
       - POSTGRES_PASSWORD=haha_pass
+  memcached:
+   image: memcached:latest
+   ports:
+     - 11211:11211
+   entrypoint:
+    - memcached
+    - -m 100
 
 volumes:
     appdata:

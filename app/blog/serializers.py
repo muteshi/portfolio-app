@@ -1,7 +1,6 @@
 
-from rest_framework import serializers
 import requests
-from rest_framework.response import Response
+from rest_framework import serializers
 from rest_framework import status
 
 from django.conf import settings
@@ -48,7 +47,7 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('id', 'title', 'content', 'date_posted', 'updated',
-                  'category', 'tags', 'slug', 'image')
+                  'category', 'tags', 'slug', 'image', 'featured',)
         read_only_Fields = ('id', 'date_posted', 'updated')
 
 
@@ -101,7 +100,8 @@ class MessageSerializer(serializers.ModelSerializer):
             response['error'] = 'Could not submit the form. Try again'
             response['status'] = status.HTTP_400_BAD_REQUEST
             raise serializers.ValidationError(
-                {"captcha": "Something went wrong. Refresh the page and  try again"})
+                {"captcha":
+                 "Something went wrong. Refresh the page and  try again"})
 
         return super(MessageSerializer, self).to_internal_value(data)
 
