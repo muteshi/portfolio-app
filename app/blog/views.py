@@ -131,12 +131,20 @@ class PostViewSet(viewsets.ModelViewSet):
         cats = self.request.query_params.get('cats')
         queryset = self.queryset
         if tags:
-            tag_ids = self._params_to_ints(tags)
-            queryset = queryset.filter(tags__id__in=tag_ids)
-        if cats:
-            cat_ids = self._params_to_ints(cats)
-            queryset = queryset.filter(category__id__in=cat_ids)
+            try:
+                tag_ids = self._params_to_ints(tags)
+                queryset = queryset.filter(tags__id__in=tag_ids)
+            except ValueError:
+                queryset = queryset.filter(
+                    tags__name__icontains=tags.lower())
 
+        if cats:
+            try:
+                cat_ids = self._params_to_ints(cats)
+                queryset = queryset.filter(category__id__in=cat_ids)
+            except ValueError:
+                queryset = queryset.filter(
+                    category__name__icontains=cats.lower())
         return queryset
 
     def get_serializer_class(self):
