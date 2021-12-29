@@ -25,13 +25,13 @@ class PublicTagsApiTests(TestCase):
     def setUp(self) -> None:
         self.client = APIClient()
 
-    def test_login_required(self):
-        """
-        Test that a login is required before retrieving user tags
-        """
-        res = self.client.get(TAGS_URL)
+    # def test_login_required(self):
+    #     """
+    #     Test that a login is norequired before retrieving user tags
+    #     """
+    #     res = self.client.get(TAGS_URL)
 
-        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+    #     self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 class PrivateTagsApiTests(TestCase):

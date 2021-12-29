@@ -23,11 +23,15 @@ class TagSerializer(serializers.ModelSerializer):
     """
     Serializer class for tag object
     """
+    post_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Tag
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'post_count')
         read_only_Fields = ('id',)
+
+    def get_post_count(self, obj):
+        return obj.post_set.all().count()
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -55,6 +59,7 @@ class PostSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
+
         model = Post
         fields = ('id', 'title', 'content', 'date_posted', 'updated',
                   'category', 'tags', 'slug', 'image', 'featured',)

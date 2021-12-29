@@ -43,6 +43,9 @@ class MainBlogAppViewSet(
         if assigned_only:
             queryset = queryset.filter(post__isnull=False)
 
+        if self.request.user.is_anonymous:
+            return queryset.order_by('name').distinct()
+
         return queryset.filter(
             user=self.request.user
         ).order_by('-name').distinct()
@@ -61,6 +64,8 @@ class TagViewSet(MainBlogAppViewSet):
     Manage tags in the database
     """
     queryset = Tag.objects.all()
+    permission_classes = (AllowAny,)
+    http_method_names = ['get', 'head']
     serializer_class = serializers.TagSerializer
 
 
