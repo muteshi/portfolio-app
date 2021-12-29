@@ -59,6 +59,7 @@ services:
       - certbot-conf:/etc/letsencrypt/:rw
   memcached:
     image: memcached:latest
+    restart: always
     ports:
       - 11211:11211
     entrypoint:
