@@ -9,6 +9,16 @@ from django.conf import settings
 from core.models import Message, Portfolio, Resume, Skill, Tag, Category, Post
 
 
+class CategoryListingField(serializers.RelatedField):
+    def to_representation(self, value):
+        return value.name
+
+
+class TagsListingField(serializers.RelatedField):
+    def to_representation(self, value):
+        return value.name
+
+
 class TagSerializer(serializers.ModelSerializer):
     """
     Serializer class for tag object
@@ -35,11 +45,11 @@ class PostSerializer(serializers.ModelSerializer):
     """
     Serializer class for post object
     """
-    category = serializers.PrimaryKeyRelatedField(
+    category = CategoryListingField(
         many=True,
         queryset=Category.objects.all()
     )
-    tags = serializers.PrimaryKeyRelatedField(
+    tags = TagsListingField(
         many=True,
         queryset=Tag.objects.all()
     )
