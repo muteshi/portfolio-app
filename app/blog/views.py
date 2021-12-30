@@ -40,6 +40,7 @@ class MainBlogAppViewSet(
             int(self.request.query_params.get('assigned_only', 0))
         )
         queryset = self.queryset
+
         if assigned_only:
             queryset = queryset.filter(post__isnull=False)
 

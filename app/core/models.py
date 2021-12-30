@@ -5,7 +5,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
     PermissionsMixin
 
-
 from tinymce import models as tinymce_models
 
 from django.conf import settings
@@ -65,6 +64,7 @@ class Tag(models.Model):
     Tag model to be used for a post tagging
     """
     name = models.CharField(max_length=255)
+    featured = models.BooleanField(default=False, blank=True, null=True)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE

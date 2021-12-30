@@ -27,7 +27,7 @@ class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = ('id', 'name', 'post_count')
+        fields = ('id', 'name', 'post_count', 'featured')
         read_only_Fields = ('id',)
 
     def get_post_count(self, obj):
@@ -62,7 +62,7 @@ class PostSerializer(serializers.ModelSerializer):
 
         model = Post
         fields = ('id', 'title', 'content', 'date_posted', 'updated',
-                  'category', 'tags', 'slug', 'image', 'featured',)
+                  'category', 'tags', 'slug', 'image', 'featured')
         read_only_Fields = ('id', 'date_posted', 'updated')
 
 
