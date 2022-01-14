@@ -101,6 +101,18 @@ class ModelTests(TestCase):
 
         self.assertEqual(str(skill), skill.title)
 
+    def test_photos_str(self):
+        """
+        Test the string representation of Photos model
+        """
+        photos = models.Photos.objects.create(
+            user=test_user(),
+            caption='test photo',
+            title='testing photo'
+
+        )
+        self.assertEqual(str(photos), photos.title)
+
     def test_message_str(self):
         """
         Test the string representation of the Contact model

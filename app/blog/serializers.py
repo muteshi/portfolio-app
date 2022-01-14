@@ -6,7 +6,7 @@ from rest_framework import status
 from django.conf import settings
 
 
-from core.models import Message, Portfolio, Resume, Skill, Tag, Category, Post
+from core.models import Message, Photos, Portfolio, Resume, Skill, Tag, Category, Post
 
 
 class CategoryListingField(serializers.RelatedField):
@@ -88,6 +88,15 @@ class PostDetailSerializer(PostSerializer):
         many=True,
         read_only=True
     )
+
+
+class PhotosSerializer(serializers.ModelSerializer):
+    """
+    Serializer class for photos list view
+    """
+    class Meta:
+        model = Photos
+        fields = ('id', 'title', 'caption', 'image')
 
 
 class MessageSerializer(serializers.ModelSerializer):

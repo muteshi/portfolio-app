@@ -130,6 +130,28 @@ class Skill(models.Model):
         return self.title
 
 
+class Photos(models.Model):
+    """
+    Photos model object
+    """
+    title = models.CharField(max_length=120)
+    caption = models.CharField(max_length=255)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    image = models.FileField(
+        null=True,
+        upload_to=post_image_file_path
+    )
+
+    class Meta:
+        verbose_name_plural = "Photos"
+
+    def __str__(self):
+        return self.title
+
+
 class Post(models.Model):
     """
     Blog post object

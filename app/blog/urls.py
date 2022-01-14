@@ -11,12 +11,13 @@ router.register('posts', views.PostViewSet)
 router.register('portfolios', views.PortfolioViewSet)
 router.register('resumes', views.ResumeViewSet)
 router.register('skills', views.SkillViewSet)
-# router.register('messages', views.MessageViewSet)
+router.register('photos', views.PhotosViewSet)
 
 app_name = 'blog'
 
 urlpatterns = [
     path('', include(router.urls)),
+    # path('photos/', views.PhotosViewSet.as_view(), name='photos'),
     path('new-message/',  views.MessageCreateAPIView.as_view(),
          name='message-create'),
 

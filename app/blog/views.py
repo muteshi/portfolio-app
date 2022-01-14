@@ -1,3 +1,4 @@
+from random import choice
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -9,7 +10,7 @@ from rest_framework import filters
 from rest_framework.generics import CreateAPIView
 
 from core.utils import caching, id_generator
-from core.models import Category, Message, Portfolio, Resume, Skill, Tag, Post
+from core.models import Category, Message, Photos, Portfolio, Resume, Skill, Tag, Post
 
 from blog import serializers
 
@@ -89,6 +90,21 @@ class SkillViewSet(viewsets.ModelViewSet):
     # authentication_classes = (TokenAuthentication,)
     permission_classes = (AllowAny,)
     http_method_names = ['get', 'head']
+
+
+class PhotosViewSet(viewsets.ModelViewSet):
+    """
+    Manage listing of photos
+    """
+    queryset = Photos.objects.all()
+    permission_classes = (AllowAny,)
+    http_method_names = ['get', 'head']
+    serializer_class = serializers.PhotosSerializer
+
+    def get_queryset(self):
+        pks = Photos.objects.values_list('pk', flat=True).order_by('id')
+        random_photo_id = choice(pks)
+        return Photos.objects.all().filter(id=random_photo_id)
 
 
 class CategoryViewSet(MainBlogAppViewSet):
