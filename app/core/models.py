@@ -157,6 +157,7 @@ class Post(models.Model):
     Blog post object
     """
     title = models.CharField(max_length=255)
+    description = models.CharField(max_length=455, blank=True, null=True)
     slug = models.SlugField(unique=True, blank=True, null=True)
     featured = models.BooleanField(default=False, blank=True, null=True)
     content = tinymce_models.HTMLField()
