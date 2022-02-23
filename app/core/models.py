@@ -5,9 +5,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
     PermissionsMixin
 
-from tinymce import models as tinymce_models
 
 from django.conf import settings
+
+from markdownx.models import MarkdownxField
 
 
 def post_image_file_path(instance, filename):
@@ -100,7 +101,7 @@ class Message(models.Model):
     name = models.CharField(max_length=250)
     email = models.EmailField(max_length=255)
     subject = models.CharField(max_length=255)
-    comment = tinymce_models.HTMLField()
+    comment = MarkdownxField()
     date_sent = models.DateTimeField(auto_now=False, auto_now_add=True)
     message_id = models.CharField(
         max_length=120, default='ABC', unique=True)
@@ -160,7 +161,7 @@ class Post(models.Model):
     description = models.CharField(max_length=455, blank=True, null=True)
     slug = models.SlugField(unique=True, blank=True, null=True)
     featured = models.BooleanField(default=False, blank=True, null=True)
-    content = tinymce_models.HTMLField()
+    content = MarkdownxField()
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE

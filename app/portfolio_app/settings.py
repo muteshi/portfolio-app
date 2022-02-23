@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'blog',
     'core',
     'user',
-    'tinymce',
+    'markdownx',
 ]
 
 

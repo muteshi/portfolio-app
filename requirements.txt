@@ -10,5 +10,6 @@ sendgrid>=6.9.0,<7.0.0
 requests>=2.26.0,<2.30.0
 django-tinymce>=3.3.0,<3.4.0
 pylibmc>=1.6.1,<1.9.9
+django-markdownx>=3.0.1,<4.0.0 
 
 
