@@ -43,6 +43,13 @@ server {
        
     }
 
+    location /markdownx {
+       uwsgi_pass               ${APP_HOST}:${APP_PORT};
+       include                 /etc/nginx/uwsgi_params;
+      
+       
+    }
+
     location /static {
         alias /vol/static;
         
