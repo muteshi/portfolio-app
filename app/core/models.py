@@ -176,7 +176,7 @@ class Post(models.Model):
     )
 
     class Meta:
-        ordering = ["title"]
+        ordering = ["-date_posted"]
         verbose_name_plural = "Posts"
 
     def __str__(self):
